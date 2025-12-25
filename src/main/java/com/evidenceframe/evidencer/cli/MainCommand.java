@@ -7,10 +7,13 @@ import com.evidenceframe.evidencer.output.*;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Command(
         name = "evidenceframe",
@@ -47,6 +50,24 @@ public class MainCommand implements Runnable {
 
     @Override
     public void run() {
+
+        try {
+            if (Files.exists(outputDir)) {
+                try (Stream<Path> entries = Files.list(outputDir)) {
+                    if (entries.findAny().isPresent()) {
+                        System.err.println(
+                                "Output directory is not empty. Use a new directory for each run."
+                        );
+                        System.exit(ExitCode.FAILURE.code());
+                        return;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to check output directory: " + e.getMessage());
+            System.exit(ExitCode.FAILURE.code());
+            return;
+        }
 
         RunMode runMode = dryRun ? RunMode.DRY_RUN : RunMode.NORMAL;
 

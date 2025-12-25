@@ -1,6 +1,8 @@
 package com.evidenceframe.evidencer.output;
 
 import com.evidenceframe.evidencer.core.ExecutionContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +14,7 @@ public final class MetadataWriter {
 
     private static final DateTimeFormatter UTC_FORMAT =
             DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public void write(ExecutionContext context) throws IOException {
 
@@ -20,12 +23,11 @@ public final class MetadataWriter {
 
         Path metadataFile = metadataDir.resolve("run_metadata.json");
 
-        String json = "{\n" +
-                "  \"auditType\": \"" + context.auditType() + "\",\n" +
-                "  \"runMode\": \"" + context.runMode() + "\",\n" +
-                "  \"startedAtUtc\": \"" + UTC_FORMAT.format(context.runStartedAt()) + "\"\n" +
-                "}";
+        ObjectNode root = mapper.createObjectNode();
+        root.put("auditType", context.auditType());
+        root.put("runMode", context.runMode().name());
+        root.put("startedAtUtc", UTC_FORMAT.format(context.runStartedAt()));
 
-        Files.writeString(metadataFile, json);
+        mapper.writeValue(metadataFile.toFile(), root);
     }
 }

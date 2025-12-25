@@ -1,0 +1,18 @@
+ISO/IEC 27001 — Evidence Collection Summary
+
+Run Date (UTC): 2025-12-25T15:14:51.449349Z
+Audit Type: Project "Alpha"
+Run Mode: NORMAL
+
+Evidence Collected:
+✔ GitHub Repository Evidence
+
+Evidence Not Collected:
+None
+
+Integrity Notes:
+- Evidence was collected using read-only access.
+- No systems were modified during this run.
+- Missing evidence is reported explicitly.
+
+End of Summary

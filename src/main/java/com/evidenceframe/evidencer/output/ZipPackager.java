@@ -11,16 +11,17 @@ public final class ZipPackager {
 
     public Path createZip(Path evidenceRoot) throws IOException {
 
-//        Path zipFile = evidenceRoot.getParent()
-//                .resolve(evidenceRoot.getFileName().toString() + ".zip");
         Path parent = evidenceRoot.toAbsolutePath().getParent();
         if (parent == null) {
             parent = Path.of(".");
         }
 
-        Path zipFile = parent.resolve(
-                evidenceRoot.getFileName().toString() + ".zip"
-        );
+        Path fileName = evidenceRoot.getFileName();
+        String zipName = (fileName != null)
+                ? fileName.toString()
+                : "evidence";
+
+        Path zipFile = parent.resolve(zipName + ".zip");
 
 
         try (OutputStream fos = Files.newOutputStream(zipFile);

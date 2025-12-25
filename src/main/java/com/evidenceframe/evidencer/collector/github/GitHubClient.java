@@ -1,5 +1,9 @@
 package com.evidenceframe.evidencer.collector.github;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,6 +20,7 @@ public final class GitHubClient {
 
     private final HttpClient httpClient;
     private final GitHubConfig config;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public GitHubClient(GitHubConfig config) {
         this.config = config;
@@ -41,6 +46,7 @@ public final class GitHubClient {
         int perPage = Math.min(config.repoLimit(), 100);
         int remaining = config.repoLimit();
         int page = 1;
+        int totalCollected = 0;
 
         while (remaining > 0) {
             String url = API_BASE + path
@@ -56,14 +62,35 @@ public final class GitHubClient {
                 );
             }
 
-            pages.add(response.body());
+            // Parse the response to handle item limits precisely
+            JsonNode rootNode = mapper.readTree(response.body());
+            if (!rootNode.isArray()) {
+                throw new IOException("GitHub API returned non-array response");
+            }
 
-            // GitHub returns fewer items than per_page when done
-            if (!hasNextPage(response)) {
+            ArrayNode pageItems = mapper.createArrayNode();
+            for (JsonNode repo : rootNode) {
+                if (totalCollected >= config.repoLimit()) {
+                    break;
+                }
+                pageItems.add(repo);
+                totalCollected++;
+            }
+
+            if (pageItems.size() > 0) {
+                pages.add(pageItems.toString());
+            }
+
+            if (totalCollected >= config.repoLimit()) {
                 break;
             }
 
-            remaining -= perPage;
+            // GitHub returns fewer items than per_page when done
+            if (!hasNextPage(response) || rootNode.size() < perPage) {
+                break;
+            }
+
+            remaining -= pageItems.size();
             page++;
         }
 
