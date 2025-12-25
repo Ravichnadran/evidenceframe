@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.graalvm.buildtools.native' version '0.10.2'
+}
+
+group = 'com.evidenceframe'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+application {
+    mainClass = 'com.evidenceframe.evidencer.cli.MainCommand'
+}
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'evidenceframe'
+            mainClass = 'com.evidenceframe.evidencer.cli.MainCommand'
+            buildArgs.add('--no-fallback')
+            buildArgs.add('--enable-http')
+            buildArgs.add('--enable-https')
+        }
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'info.picocli:picocli:4.7.6'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.6'
+}
