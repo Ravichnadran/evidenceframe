@@ -1,0 +1,27 @@
+AuditExport Commercial License
+
+Copyright (c) 2025 Ravichandran Rajendran
+
+This software (“AuditExport”) is licensed, not sold.
+
+Permission is granted to the purchaser of AuditExport to use this software
+for internal business or personal purposes, including execution on local
+systems and CI/CD environments, subject to the following conditions:
+
+1. Redistribution, resale, sublicensing, or public hosting of this software,
+   in whole or in part, is strictly prohibited without prior written permission
+   from the copyright holder.
+
+2. Modification of the software for internal use is permitted, but distribution
+   of modified versions is prohibited.
+
+3. This license applies to the compiled binaries and associated documentation.
+   Source code is not provided under this license.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
