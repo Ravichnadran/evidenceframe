@@ -3,6 +3,7 @@ package com.evidenceframe.evidencer.collector.github;
 import com.evidenceframe.evidencer.core.Collector;
 import com.evidenceframe.evidencer.core.CollectorResult;
 import com.evidenceframe.evidencer.core.ExecutionContext;
+import com.evidenceframe.evidencer.core.RunMode;
 
 import java.util.List;
 
@@ -15,6 +16,15 @@ public final class GitHubCollector implements Collector {
 
     @Override
     public CollectorResult collect(ExecutionContext context) {
+
+        if (context.runMode() == RunMode.DRY_RUN) {
+            return new CollectorResult(
+                    name(),
+                    CollectorResult.Status.SUCCESS,
+                    List.of(),
+                    "Dry run: skipping GitHub collector"
+            );
+        }
 
         GitHubConfig config;
         try {

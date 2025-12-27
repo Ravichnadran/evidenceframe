@@ -17,12 +17,12 @@ public final class HashWriter {
 
         Files.walk(evidenceRoot)
                 .filter(Files::isRegularFile)
-                .filter(p -> !p.getFileName().toString().equals("hashes.txt"))
+                .filter(p -> !p.getFileName().toString().equals("checksums.sha256"))
                 .forEach(filesToHash::add);
 
         filesToHash.sort(Comparator.comparing(Path::toString));
 
-        Path hashFile = evidenceRoot.resolve("hashes.txt");
+        Path hashFile = evidenceRoot.resolve("checksums.sha256");
 
         StringBuilder sb = new StringBuilder();
 

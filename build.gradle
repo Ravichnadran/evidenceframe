@@ -13,13 +13,17 @@ java {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 application {
     mainClass = 'com.evidenceframe.evidencer.cli.MainCommand'
 }
 graalvmNative {
     binaries {
         main {
-            imageName = 'evidenceframe'
+            imageName = 'auditexport'
             mainClass = 'com.evidenceframe.evidencer.cli.MainCommand'
             buildArgs.add('--no-fallback')
             buildArgs.add('--enable-http')

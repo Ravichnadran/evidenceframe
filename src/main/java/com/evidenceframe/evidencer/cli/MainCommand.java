@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Command(
-        name = "evidenceframe",
+        name = "auditexport",
         mixinStandardHelpOptions = true,
-        version = "evidenceframe 0.1.0",
+        version = "auditexport 0.1.0",
         description = "Evidence collection tool for technical compliance audits"
 )
 public class MainCommand implements Runnable {
@@ -56,7 +56,7 @@ public class MainCommand implements Runnable {
                 try (Stream<Path> entries = Files.list(outputDir)) {
                     if (entries.findAny().isPresent()) {
                         System.err.println(
-                                "Output directory is not empty. Use a new directory for each run."
+                                "Output directory is not empty. Use --output <new-dir> or remove existing directory."
                         );
                         System.exit(ExitCode.FAILURE.code());
                         return;
@@ -116,7 +116,9 @@ public class MainCommand implements Runnable {
 
         try {
             Path zip = new ZipPackager().createZip(context.outputRoot());
-            System.out.println("Evidence packaged as: " + zip);
+            System.out.println("Evidence directory created: " + context.outputRoot());
+            System.out.println("Final audit artifact: " + zip);
+            System.out.println("Checksum: checksums.sha256");
         } catch (Exception e) {
             System.err.println("Failed to create ZIP: " + e.getMessage());
             System.exit(ExitCode.FAILURE.code());
