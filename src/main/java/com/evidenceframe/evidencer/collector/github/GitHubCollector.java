@@ -20,7 +20,7 @@ public final class GitHubCollector implements Collector {
         if (context.runMode() == RunMode.DRY_RUN) {
             return new CollectorResult(
                     name(),
-                    CollectorResult.Status.SUCCESS,
+                    CollectorResult.Status.SKIPPED,
                     List.of(),
                     "Dry run: skipping GitHub collector"
             );

@@ -50,25 +50,6 @@ public class MainCommand implements Runnable {
 
     @Override
     public void run() {
-
-        try {
-            if (Files.exists(outputDir)) {
-                try (Stream<Path> entries = Files.list(outputDir)) {
-                    if (entries.findAny().isPresent()) {
-                        System.err.println(
-                                "Output directory is not empty. Use --output <new-dir> or remove existing directory."
-                        );
-                        System.exit(ExitCode.FAILURE.code());
-                        return;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Failed to check output directory: " + e.getMessage());
-            System.exit(ExitCode.FAILURE.code());
-            return;
-        }
-
         RunMode runMode = dryRun ? RunMode.DRY_RUN : RunMode.NORMAL;
 
         ExecutionContext context = new ExecutionContext(
@@ -86,6 +67,54 @@ public class MainCommand implements Runnable {
 
         if (collectors.isEmpty()) {
             System.err.println("No collectors enabled. Nothing to do.");
+            System.exit(ExitCode.FAILURE.code());
+            return;
+        }
+
+        if (dryRun) {
+            System.out.println("Mode: DRY-RUN");
+            System.out.println("Collectors enabled:");
+            for (Collector collector : collectors) {
+                System.out.println("  - " + collector.name());
+            }
+            System.out.println();
+            System.out.println("Network access: DISABLED");
+            System.out.println("File writes: DISABLED");
+
+            if (githubEnabled) {
+                String token = System.getenv("GITHUB_TOKEN");
+                boolean hasToken = token != null && !token.isBlank();
+                System.out.println("Credentials: " + (hasToken ? "detected" : "not detected"));
+            }
+
+            System.out.println();
+            System.out.println("Planned evidence:");
+            if (githubEnabled) {
+                System.out.println("  - Repository metadata");
+            }
+            System.out.println("  - Hashes");
+            System.out.println("  - Evidence ZIP");
+            System.out.println();
+            System.out.println("Dry-run completed successfully.");
+            System.out.println("No external calls were made.");
+            System.exit(0);
+            return;
+        }
+
+        try {
+            if (Files.exists(outputDir)) {
+                try (Stream<Path> entries = Files.list(outputDir)) {
+                    if (entries.findAny().isPresent()) {
+                        System.err.println(
+                                "Output directory is not empty. Use --output <new-dir> or remove existing directory."
+                        );
+                        System.exit(ExitCode.FAILURE.code());
+                        return;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to check output directory: " + e.getMessage());
             System.exit(ExitCode.FAILURE.code());
             return;
         }
